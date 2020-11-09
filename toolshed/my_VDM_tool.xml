@@ -26,8 +26,7 @@
 		#end if
 			
 		--qual $qual 
-		--thrup $thrup 
-		--thrlow $thrlow
+		--freqthr $freqthr
 		
 		#if $allfreq.allfreq_select=="AB"
 			--allr "$allfreq.ab"
