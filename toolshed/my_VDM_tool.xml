@@ -1,0 +1,203 @@
+ <tool id="my_VDM_tool" name="VDM_tool" version="1.0.0">
+	<!--A simple description of the tool that will appear in the tool panel in Galaxy.-->
+	<description>Map a mutation using in silico bulk segregant linkage analysis of pooled recombinant lines generated through backcrossing.</description>
+	<!-- Handles exit codes in Galaxy. -->
+	<stdio>
+		<exit_code range="1:"/>
+	</stdio>
+	<requirements>
+		<requirement type="package" version="3.2.1">R</requirement>
+		<requirement type="package" version="1.2.0">getopt</requirement>
+	</requirements>
+
+	<command>
+	Rscript "${__tool_directory__}/my_VDM_tool.R"
+		--inf "$inf"
+		#if $species.species_select=="Celegans"
+			--itype "$species.ce"
+		#else if $species.species_select=="Zebrafish"
+			--itype "$species.ze"
+		#else if $species.species_select=="Brachypodium"
+			--itype "$species.br"
+		#else if $species.species_select=="Arabidopsis"
+			--itype "$species.ar"
+		#else if $species.species_select=="other"
+			--itype "$species.ot"
+		#end if
+			
+		--qual $qual 
+		--thrup $thrup 
+		--thrlow $thrlow
+		
+		#if $allfreq.allfreq_select=="AB"
+			--allr "$allfreq.ab"
+		#else if $allfreq.allfreq_select=="ratio"
+			--allr "$allfreq.ratio"
+		#end if
+		
+		#if $only_snp.only_snp_select=="TRUE"
+			--snp "$only_snp.true"
+		#else if $only_snp.only_snp_select=="FALSE"
+			--snp "$only_snp.false"
+		#end if
+		
+		--lsp $lsp 
+		--pcol "$pcol" 
+		--lcol "$lcol" 
+		
+		#if $xaxis.xaxis_select=="TRUE"
+			--xstand $xaxis.true
+		#else if $xaxis.xaxis_select=="FALSE"
+			--xstand $xaxis.false
+		#end if
+		
+		--bsize $bsize
+
+		#if $binnorm.binnorm_select=="TRUE"
+			--bnorm $binnorm.true
+		#else if $binnorm.binnorm_select=="FALSE"
+			--bnorm $binnorm.false
+		#end if
+
+		#if $exclfiles.exclfiles_select=="FALSE"
+			--exclf $exclfiles.false
+		#else if $exclfiles.exclfiles_select=="TRUE"
+			--exclf $exclfiles.true
+		#end if
+		
+		--exclthr $exclthr
+		--exclcol "$exclcol" 
+
+		--parn "$parn"
+		--outn "$outn"
+		--pdfn "$pdfn"
+	</command>
+
+	<inputs>
+		<param type="data" name="inf" format="vcf" label="fastq file"/>
+
+		<conditional name="species">
+			<param name="species_select" type="select" label="Select the species">
+				<option value="Celegans">C. elegans</option>
+				<option value="Zebrafish">Zebrafish</option>
+				<option value="Brachypodium">Brachypodium</option>
+				<option value="Arabidopsis">Arabidopsis</option>
+				<option value="other">other</option>
+			</param>
+			<when value="Celegans">
+				<param name="ce" type="hidden" value="C.elegans" label="The C. elegans chromosome numbers and lengths (in Mb)" help="C.elegans help"/>
+			</when>
+			<when value="Zebrafish">
+				<param name="ze" type="hidden" value="Zebrafish" label="The Zebrafish chromosome numbers and lengths (in Mb)" help="Zebrafish help"/>
+			</when>
+			<when value="Brachypodium">
+				<param name="br" type="hidden" value="Brachypodium" label="The Brachypodium chromosome numbers and lengths (in Mb)" help="Brachypodium help"/>
+			</when>
+			<when value="Arabidopsis">
+				<param name="ar" type="hidden" value="Arabidopsis" label="The Arabidopsis chromosome numbers and lengths (in Mb)" help="Arabidopsis help"/>
+			</when>
+			<when value="other">
+				<param name="ot" type="data" format="tabular" label="Select file with chromosome numbers and lengths (in Mb) from your history" help="Table consisting of chromosome number in column 1 and length (in Mb) in column 2 (e.g. 'CHRI	16' or 'CHR1	16') with no column header names, tab-delimitation, and no quotation marks in a .txt file"/>
+			</when>
+		</conditional>
+			
+		<param type="float" name="qual" value="200" label="Filter by quality" help="Filter results based on quality value"/>
+		<param type="float" name="freqthr" value="1" label="upper threshold for homozygosity" help="Allele frequency values greater than or equal to this will be considered as homozygous ALT for barplots of frequency homozygous variants along chromosomes"/>
+
+		<conditional name="allfreq">
+			<param name="allfreq_select" type="select" label="Select the source for allele frequency">
+				<option value="AB">AB</option>
+				<option value="ratio">AO/(AO+RO)</option>
+			</param>
+			<when value="AB">
+				<param name="ab" type="hidden" value="AB" label="Use AB field (from Freebayes) as the value for allele frequency" help=" "/>
+			</when>
+			<when value="ratio">
+				<param name="ratio" type="hidden" value="ratio" label="Use AO/(AO+RO) calculation (from Freebayes) as the value for allele frequency" help=" "/>
+			</when>
+			</conditional>
+
+		<conditional name="only_snp">
+			<param name="only_snp_select" type="select" label="Select type of variants to use for plotting">
+				<option value="TRUE">SNPs</option>
+				<option value="FALSE">all</option>
+			</param>
+			<when value="TRUE">
+				<param name="true" type="hidden" value="TRUE" label="Use only SNP variants" help=" "/>
+			</when>
+			<when value="FALSE">
+				<param name="false" type="hidden" value="FALSE" label="Use all types of variants" help=" "/>
+			</when>
+			</conditional>
+			
+		<param type="float" name="lsp" value="0.4" label="Loess span" help="Parameter that controls the smoothing of the Loess curve"/>
+		<param type="text" name="pcol" value="black" label="Colour of scatterplot points" help="See below for list of supported colors"/>
+		<param type="text" name="lcol" value="red" label="Colour of Loess curve" help="See below for list of supported colors"/>
+
+
+		<conditional name="xaxis">
+			<param name="xaxis_select" type="select" label="Spacing of the x-axis in plots">
+				<option value="TRUE">True</option>
+				<option value="FALSE">False</option>
+			</param>
+			<when value="TRUE">
+				<param name="true" type="hidden" value="TRUE" label="Uniform spacing of the x-axis based on Mb" help="Scale of x-axis (in Mb) is fixed for the scatter plots and frequency plots across all chromosomes"/>
+			</when>
+			<when value="FALSE">
+				<param name="false" type="hidden" value="FALSE" label="Variable spacing of the x-axis based on chromosome lengths" help="Scale of x-axis (in Mb) is dependent on chromosome length for the scatter plots and frequency plots for all chromosomes"/>
+			</when>
+			</conditional>
+
+		<param type="integer" name="bsize" value="1000000" label="bin size" help="Size of the bins (in bp) for barplot of frequency of homozygous variants along chromosomes"/>
+
+		<conditional name="binnorm">
+			<param name="binnorm_select" type="select" label="Normalisation of y-axis in frequency barplots">
+				<option value="TRUE">True</option>
+				<option value="FALSE">False</option>
+			</param>
+			<when value="TRUE">
+				<param name="true" type="hidden" value="TRUE" label="Normalised y-axis frequency values based on formula" help="Normalisation formula as in cloudmap paper"/>
+			</when>
+			<when value="FALSE">
+				<param name="false" type="hidden" value="FALSE" label="Original frequency y-axis values" help=" "/>
+			</when>
+			</conditional>
+
+		<conditional name="exclfiles">
+			<param name="exclfiles_select" type="select" label="Additional exclusion of variants by subtraction">
+				<option value="FALSE">No</option>
+				<option value="TRUE">Yes</option>
+			</param>	
+			<when value="FALSE">
+				<param name="false" type="hidden" value="FALSE" label="No additional variant subtraction" help=""/>
+			</when>
+			<when value="TRUE">
+				<param name="true" type="data" format="tabular" label="Select variant lists to subtract from your history" help="Requires CHR POS DEPTH REF ALT columns- recommend directly using the output table generated by this tool or refer to it for desired format"/>
+			
+			<param type="float" name="exclthr" value="0" label="Filter based on allelic ratio values" help="For filtering variant subtraction lists, only variants above this threshold value will be used for subtraction (e.g. 0 means all variants and 1 means only homozygous variants"/>
+			<param type="text" name="exclcol" value="green" label="Colour of original loess curve (before additional variant subtraction)" help="See below for list of supported colors"/>
+			</when>
+		</conditional>	
+			
+	</inputs>
+
+	<outputs>
+		<data name="parn" format="txt"/>
+		<data name="outn" format="txt"/>
+		<data name="pdfn" format="pdf"/>
+	</outputs>
+
+
+	<tests>
+		<test>
+			<param name="inf" value="nor22.vcf"/>
+			<output name="outn" file="vcf_output.txt"/>
+		</test>
+	</tests>
+
+	<help>
+	This tool plots	the linkage for the Variant Discovery Mapping (VDM) approach.
+
+	For full list for valid color names, refer to the http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf link.
+	</help>
+</tool>
