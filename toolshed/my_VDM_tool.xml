@@ -84,48 +84,48 @@
 				<option value="other">other</option>
 			</param>
 			<when value="Celegans">
-				<param name="ce" type="hidden" value="C.elegans" label="The C. elegans chromosome numbers and lengths (in Mb)" help="C.elegans help"/>
+				<param name="ce" type="hidden" value="C.elegans" label="The C. elegans chromosome numbers and lengths (in Mb)" help=""/>
 			</when>
 			<when value="Zebrafish">
-				<param name="ze" type="hidden" value="Zebrafish" label="The Zebrafish chromosome numbers and lengths (in Mb)" help="Zebrafish help"/>
+				<param name="ze" type="hidden" value="Zebrafish" label="The Zebrafish chromosome numbers and lengths (in Mb)" help=""/>
 			</when>
 			<when value="Brachypodium">
-				<param name="br" type="hidden" value="Brachypodium" label="The Brachypodium chromosome numbers and lengths (in Mb)" help="Brachypodium help"/>
+				<param name="br" type="hidden" value="Brachypodium" label="The Brachypodium chromosome numbers and lengths (in Mb)" help=""/>
 			</when>
 			<when value="Arabidopsis">
-				<param name="ar" type="hidden" value="Arabidopsis" label="The Arabidopsis chromosome numbers and lengths (in Mb)" help="Arabidopsis help"/>
+				<param name="ar" type="hidden" value="Arabidopsis" label="The Arabidopsis chromosome numbers and lengths (in Mb)" help=""/>
 			</when>
 			<when value="other">
 				<param name="ot" type="data" format="tabular" label="Select file with chromosome numbers and lengths (in Mb) from your history" help="Table consisting of chromosome number in column 1 and length (in Mb) in column 2 (e.g. 'CHRI	16' or 'CHR1	16') with no column header names, tab-delimitation, and no quotation marks in a .txt file"/>
 			</when>
 		</conditional>
 			
-		<param type="float" name="qual" value="200" label="Filter by quality" help="Filter results based on quality value"/>
-		<param type="float" name="freqthr" value="1" label="upper threshold for homozygosity" help="Allele frequency values greater than or equal to this will be considered as homozygous ALT for barplots of frequency homozygous variants along chromosomes"/>
+		<param type="float" name="qual" value="200" label="Filter by quality" help=""/>
+		<param type="float" name="freqthr" value="1" label="Minimum allele ratio for variant to be considered homozygous" help="For frequency plots"/>
 
 		<conditional name="allfreq">
-			<param name="allfreq_select" type="select" label="Select the source for allele frequency">
+			<param name="allfreq_select" type="select" label="Select how allele ratios is calculated">
 				<option value="AB">AB</option>
 				<option value="ratio">AO/(AO+RO)</option>
 			</param>
 			<when value="AB">
-				<param name="ab" type="hidden" value="AB" label="Use AB field (from Freebayes) as the value for allele frequency" help=" "/>
+				<param name="ab" type="hidden" value="AB" label="Use AB field from Freebayes" help="Use AB field (from Freebayes) as the value for allele frequency"/>
 			</when>
 			<when value="ratio">
-				<param name="ratio" type="hidden" value="ratio" label="Use AO/(AO+RO) calculation (from Freebayes) as the value for allele frequency" help=" "/>
+				<param name="ratio" type="hidden" value="ratio" label="Use AO/(AO+RO) calculation from Freebayes" help="Use AO/(AO+RO) calculation (from Freebayes) as the value for allele frequency"/>
 			</when>
 			</conditional>
 
 		<conditional name="only_snp">
 			<param name="only_snp_select" type="select" label="Select type of variants to use for plotting">
-				<option value="TRUE">SNPs</option>
-				<option value="FALSE">all</option>
+				<option value="TRUE">only SNP variants</option>
+				<option value="FALSE">all variant types</option>
 			</param>
 			<when value="TRUE">
-				<param name="true" type="hidden" value="TRUE" label="Use only SNP variants" help=" "/>
+				<param name="true" type="hidden" value="TRUE" label="Use only SNP variants" help="Use only SNP variants"/>
 			</when>
 			<when value="FALSE">
-				<param name="false" type="hidden" value="FALSE" label="Use all types of variants" help=" "/>
+				<param name="false" type="hidden" value="FALSE" label="Use all types of variants" help="Use all types of variants"/>
 			</when>
 			</conditional>
 			
@@ -135,9 +135,9 @@
 
 
 		<conditional name="xaxis">
-			<param name="xaxis_select" type="select" label="Spacing of the x-axis in plots">
-				<option value="TRUE">True</option>
-				<option value="FALSE">False</option>
+			<param name="xaxis_select" type="select" label="Spacing of x-axis intervals">
+				<option value="TRUE">Uniform lengths for Mb</option>
+				<option value="FALSE">Chromosome-scaled lengths for Mb</option>
 			</param>
 			<when value="TRUE">
 				<param name="true" type="hidden" value="TRUE" label="Uniform spacing of the x-axis based on Mb" help="Scale of x-axis (in Mb) is fixed for the scatter plots and frequency plots across all chromosomes"/>
@@ -147,12 +147,12 @@
 			</when>
 			</conditional>
 
-		<param type="integer" name="bsize" value="1000000" label="bin size" help="Size of the bins (in bp) for barplot of frequency of homozygous variants along chromosomes"/>
+		<param type="integer" name="bsize" value="1000000" label="Bin-size for frequency plots of homozygous variants" help=""/>
 
 		<conditional name="binnorm">
-			<param name="binnorm_select" type="select" label="Normalisation of y-axis in frequency barplots">
-				<option value="TRUE">True</option>
-				<option value="FALSE">False</option>
+			<param name="binnorm_select" type="select" label="Normalization of y-axis in frequency plots">
+				<option value="FALSE">Actual Frequency</option>
+				<option value="TRUE">Normalized Frequency</option>
 			</param>
 			<when value="TRUE">
 				<param name="true" type="hidden" value="TRUE" label="Normalised y-axis frequency values based on formula" help="Normalisation formula as in cloudmap paper"/>
@@ -171,13 +171,12 @@
 				<param name="false" type="hidden" value="FALSE" label="No additional variant subtraction" help=""/>
 			</when>
 			<when value="TRUE">
-				<param name="true" type="data" format="tabular" label="Select variant lists to subtract from your history" help="Requires CHR POS DEPTH REF ALT columns- recommend directly using the output table generated by this tool or refer to it for desired format"/>
-			
-			<param type="float" name="exclthr" value="0" label="Filter based on allelic ratio values" help="For filtering variant subtraction lists, only variants above this threshold value will be used for subtraction (e.g. 0 means all variants and 1 means only homozygous variants"/>
-			<param type="text" name="exclcol" value="green" label="Colour of original loess curve (before additional variant subtraction)" help="See below for list of supported colors"/>
+				<param name="true" type="data" format="tabular" label="Select variant lists to subtract from your history" help="Requires .txt file with tab-delimited columns for CHR POS DEPTH REF ALT. Recommend directly using the tables generated by this tool from other samples or as a reference for the required format"/>			
 			</when>
 		</conditional>	
 			
+		<param type="float" name="exclthr" value="0.0" label="Filter variants for subtraction based on the allelic ratio" help="For filtering variant subtraction lists, only variants above this threshold value will be used for subtraction (e.g. 0 means all variants and 1 means only homozygous variants"/>
+		<param type="text" name="exclcol" value="green" label="Colour of original loess curve (before additional variant subtraction)" help="See below for list of supported colors"/>
 	</inputs>
 
 	<outputs>
@@ -190,13 +189,15 @@
 	<tests>
 		<test>
 			<param name="inf" value="nor22.vcf"/>
-			<output name="outn" file="vcf_output.txt"/>
+			<output name="outn" file="output.txt"/>
 		</test>
 	</tests>
 
 	<help>
 	This tool plots	the linkage for the Variant Discovery Mapping (VDM) approach.
-
+	
+	
+	
 	For full list for valid color names, refer to the http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf link.
 	</help>
 </tool>

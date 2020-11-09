@@ -2,7 +2,9 @@
 # rm(list=ls())
 # myfunction(inf="nor22.vcf",itype="C.elegans",qual=400,thrup=1.0,allr="AB",snp=TRUE,lsp=0.4,pcol="black",lcol="red",xstand=TRUE,bsize=1000000,bnorm=FALSE,exclf=NULL,exclthr=0.0,exclcol="green",parn="parsed.txt",outn="output.txt",pdfn="plot.pdf")
 
-#Rscript my_VDM_tool.R --inf "nor22.vcf" --itype "C.elegans" --qual 400 --thrup 1.0 --allr "AB" --snp TRUE --lsp 0.4 --pcol "black" --lcol "red" --xstand TRUE --bsize 1000000 --bnorm FALSE --exclf NULL --exclthr 0.0 --exclcol "green" --parn "parsed.txt" --outn "output.txt" --pdfn "plot.pdf"
+#Rscript my_VDM_tool.R --inf "nor22.vcf" --itype "C.elegans" --qual 200 --freqthr 1.0 --allr "AB" --snp TRUE --lsp 0.4 --pcol "black" --lcol "red" --xstand TRUE --bsize 1000000 --bnorm FALSE --exclf "FALSE" --exclthr 0.0 --exclcol "green" --parn "parsed.txt" --outn "output.txt" --pdfn "plot.pdf"
+
+
 
 library("getopt")
 #input from trailing line arguments
@@ -24,6 +26,7 @@ option_specification = matrix(c(
   'exclf','ef',2,'character',
   'exclthr','et',2,'double',
   'exclcol','ec',2,'character',
+  'parn','r',2,'character',
   'outn','o',2,'character',
   'pdfn','p',2,'character'
 ), byrow=TRUE, ncol=4)
@@ -103,10 +106,6 @@ myfunction<-function(inf,itype,qual,freqthr,allr,snp,lsp,pcol,lcol,xstand,bsize,
   # vcfparsed_filename<-options$parn
   # pdf_filename<-options$pdfn
 
-  # plot_color<-rgb(c(col2rgb(plot_color)[1]),c(col2rgb(plot_color)[2]),c(col2rgb(plot_color)[3]),max=255,alpha=150)
-  # loess_color<-rgb(c(col2rgb(loess_color)[1]),c(col2rgb(loess_color)[2]),c(col2rgb(loess_color)[3]),max=255,alpha=150)
-  # excl_loess_color<-rgb(c(col2rgb(excl_loess_color)[1]),c(col2rgb(excl_loess_color)[2]),c(col2rgb(excl_loess_color)[3]),max=255,alpha=150)
-  
   filename<-inf
   interval_type<-itype
   read_qual<-as.numeric(qual)
@@ -122,8 +121,8 @@ myfunction<-function(inf,itype,qual,freqthr,allr,snp,lsp,pcol,lcol,xstand,bsize,
   exclusion_list<-exclf
   excl_threshold<-as.numeric(exclthr)
   excl_loess_color<-exclcol
-  vcfoutput_filename<-outn
   vcfparsed_filename<-parn
+  vcfoutput_filename<-outn
   pdf_filename<-pdfn
   
   #transparency for selected colour (to see plot points underneath)
@@ -132,11 +131,11 @@ myfunction<-function(inf,itype,qual,freqthr,allr,snp,lsp,pcol,lcol,xstand,bsize,
   excl_loess_color<-rgb(c(col2rgb(excl_loess_color)[1]),c(col2rgb(excl_loess_color)[2]),c(col2rgb(excl_loess_color)[3]),max=255,alpha=150)
   
   ###FIXED PARAMETERS
+  threshold_lower<-0
   #linkage scatter plot yaxis max value=1
-  sp_yaxis<-1 
   #chromosome intervals in Mb rather than custom
+  sp_yaxis<-1 
   interval_unit<-1000000 
-
 
 ######################
 ###READ IN VCF FILE
@@ -577,7 +576,6 @@ for(chromind in interval_frame$CHROM){
 }
 
 
-myfunction(inf=options$inf,itype=options$itype,qual=options$qual,freqthr=options$freqthr,
-           allr=options$allr,snp=options$snp,lsp=options$lsp,pcol=options$pcol,lcol=options$lcol,xstand=options$xstand,bsize=options$bsize,
-           bnorm=options$bnorm,exclf=options$exclf,exclthr=options$exclthr,exclcol=options$exclcol,parn=options$parn,outn=options$outn,pdfn=options$pdfn)
+myfunction(inf=options$inf,itype=options$itype,qual=options$qual,freqthr=options$freqthr,allr=options$allr,snp=options$snp,lsp=options$lsp,pcol=options$pcol,lcol=options$lcol,
+           xstand=options$xstand,bsize=options$bsize,bnorm=options$bnorm,exclf=options$exclf,exclthr=options$exclthr,exclcol=options$exclcol,parn=options$parn,outn=options$outn,pdfn=options$pdfn)
 
