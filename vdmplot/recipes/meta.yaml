@@ -1,0 +1,36 @@
+{% set version = "0.0.9" %}
+
+package:
+  name: r-vdmplot
+  version: {{ version }}
+
+source:
+  url: https://github.com/fxce/vdm_plot/archive/v0.2.tar.gz
+  sha256: 0add9aeb620838cc8b960209b23f8b2199ebca94
+
+build:
+  number: 1
+  skip: true  # [win32]
+  noarch: generic
+
+requirements:
+    host:
+        - r-base 3.4.1
+	- r-optparse
+    run:
+        - r-base 3.4.1
+        - r-optparse
+
+test:
+    commands:
+        - vdmplot.R --help
+
+about:
+  home: 
+  dev_url: 
+  license: GPL-3
+  summary: test
+  license_family: GPL
+extra:
+  recipe-maintainers:
+    - fxce
